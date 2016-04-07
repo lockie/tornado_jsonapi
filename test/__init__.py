@@ -7,10 +7,13 @@ import loremipsum
 import hashlib
 import json
 import sqlite3
+import socket
 import tornado.web
 import tornado.ioloop
 import webtest
 from tornado import gen
+import tornado.testing
+from tornado import netutil
 from tornado.testing import AsyncHTTPTestCase
 from tornado.wsgi import WSGIAdapter
 from http.cookiejar import CookieJar
@@ -319,3 +322,17 @@ class SlowAppMixin:
         res = self.app.get('/api/posts/')
         posts = json.loads(res.body.decode(encoding='utf-8'))
         return posts['data'][0]['id']
+
+
+def _bind_unused_port(reuse_port=False):
+    '''
+    See https://github.com/tornadoweb/tornado/pull/1574
+
+    '''
+    sock = netutil.bind_sockets(None, '127.0.0.1', family=socket.AF_INET,
+                                reuse_port=reuse_port)[0]
+    port = sock.getsockname()[1]
+    return sock, port
+
+
+tornado.testing.bind_unused_port = _bind_unused_port

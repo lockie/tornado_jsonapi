@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # vim: set fileencoding=utf8 :
-# TODO : test Postgre with https://docker-py.readthedocs.org/en/latest/
 
+import os
 import time
 import socket
 import json
@@ -120,8 +120,12 @@ except ImportError:
 class TestPostgre(PostGenerator, BaseTestCase):
     @classmethod
     def setup_class(cls):
-        cls.docker_client = docker.Client('unix://var/run/docker.sock')
-        cls.docker_client.pull('postgres')
+        api = os.getenv('DOCKER_API')
+        if api is not None:
+            cls.docker_client = docker.Client('unix://var/run/docker.sock',
+                                              version=api)
+        else:
+            cls.docker_client = docker.Client('unix://var/run/docker.sock')
         container = cls.docker_client.create_container(image='postgres')
         cls.container_id = container['Id']
         cls.docker_client.start(cls.container_id, network_mode='host')
