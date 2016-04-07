@@ -171,14 +171,14 @@ class APIHandler(tornado.web.RequestHandler):
             raise APIError(
                 status.HTTP_400_BAD_REQUEST,
                 str(err)) from err
-        return data.as_dict()['data'].as_dict()
+        return data['data']
 
     def _get_resource(self, data, validate=True):
         if data.get('type') != self._resource.name():
             raise APIError(
                 status.HTTP_409_CONFLICT,
                 'Expecting object of type "%s"', self._resource.name())
-        if 'attributes' not in data:
+        if data['attributes'] is None:
             raise APIError(
                 status.HTTP_400_BAD_REQUEST,
                 'Missing object attributes')
@@ -221,7 +221,7 @@ class APIHandler(tornado.web.RequestHandler):
         if id_:
             raise APIError(status.HTTP_400_BAD_REQUEST, 'Extra id in request')
         data = self._get_request_data(_schemas.postDataSchema())
-        if 'id' in data:
+        if data['id'] is not None:
             raise APIError(
                 status.HTTP_403_FORBIDDEN,
                 'Client-generated resource ID is not supported')
