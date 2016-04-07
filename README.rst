@@ -3,7 +3,7 @@ Tornado_jsonapi
 
 |Build Status| |Coverage Status| |Requirements Status| |PyPi version| |Documentation Status| |GitHub License|
 
-Tornado_jsonapi is a library for creating JSON API (as per
+Tornado_jsonapi is a Python 3.3+ library for creating JSON API (as per
 `jsonapi.org <http://jsonapi.org/>`_ specification) using
 `Tornado <http://tornadoweb.org>`_ web framework. It features
 
