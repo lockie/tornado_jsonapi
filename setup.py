@@ -45,7 +45,7 @@ setup(
         'tornado>=4.2',
     ],
     extras_require={
-        'sqlalchemy': ['SQLAlchemy==1.0.12', 'alchemyjsonschema==0.2.2'],
+        'sqlalchemy': ['SQLAlchemy==1.0.12', 'alchemyjsonschema==0.3.3'],
         'dbapi2': ['antiorm==1.2.0']
     },
     tests_require=['pytest==2.9.1', 'pytest-pep8==1.0.6',
