@@ -40,10 +40,7 @@ setup(
     install_requires=[
         'accept==0.1.0',
         'jsl==0.2.2',
-        'jsonpatch==1.12',
-        'jsonpointer==1.10',
-        'jsonschema==2.3.0',
-        'python_jsonschema_objects==0.0.15',
+        'python_jsonschema_objects==0.0.19.post2',
         'python-status==1.0.1',
         'tornado>=4.2',
     ],
