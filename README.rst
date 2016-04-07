@@ -1,5 +1,8 @@
 Tornado_jsonapi
 ---------------
+
+|Build Status| |Coverage Status| |Requirements Status| |PyPi version| |Documentation Status| |GitHub License|
+
 Tornado_jsonapi is a library for creating JSON API (as per
 `jsonapi.org <http://jsonapi.org/>`_ specification) using
 `Tornado <http://tornadoweb.org>`_ web framework. It features
@@ -79,3 +82,16 @@ a.k.a. TODO
 License
 -------
 This project is licensed under the MIT License.
+
+.. |Build Status| image:: https://img.shields.io/travis/lockie/tornado_jsonapi/master.svg?style=flat
+     :target: https://travis-ci.org/lockie/tornado_jsonapi
+.. |Coverage Status| image:: https://img.shields.io/codecov/c/github/lockie/tornado_jsonapi/master.svg?style=flat
+     :target: https://codecov.io/github/lockie/tornado_jsonapi
+.. |Requirements Status| image:: https://requires.io/github/lockie/tornado_jsonapi/requirements.svg?branch=master&style=flat
+     :target: https://requires.io/github/lockie/tornado_jsonapi/requirements/?branch=master
+.. |PyPi version| image:: https://img.shields.io/pypi/v/tornado_jsonapi.svg?style=flat
+     :target: https://pypi.python.org/pypi/tornado_jsonapi
+.. |Documentation Status| image:: https://readthedocs.org/projects/tornado-jsonapi/badge/?version=stable
+     :target: http://tornado-jsonapi.readthedocs.org/en/stable/?badge=stable
+.. |GitHub License| image:: https://img.shields.io/badge/license-MIT-blue.svg?style=flat
+     :target: https://raw.githubusercontent.com/lockie/tornado_jsonapi/master/LICENSE
