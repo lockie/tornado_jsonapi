@@ -2,6 +2,14 @@ Changelog
 ---------
 
 
+0.1.3 (2016-04-07)
+------------------
+
+* Fixed incompatibility with latest python-jsonschema-objects
+* Updated obsolete requirements
+* Adjusted supported Python versions
+
+
 0.1.2 (2016-04-07)
 ------------------
 

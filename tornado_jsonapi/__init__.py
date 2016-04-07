@@ -24,4 +24,4 @@ Exceptions
 
 __author__ = 'Andrew Kravchuk'
 __email__ = 'awkravchuk@gmail.com'
-__version__ = '0.1.2'
+__version__ = '0.1.3'
