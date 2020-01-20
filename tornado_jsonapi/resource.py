@@ -68,9 +68,12 @@ except ImportError:
 
 class SQLAlchemyResource(Resource):
     class ResourceObject:
-        def __init__(self, resource, model):
+        def __init__(self, resource, model, blacklist=None):
             self.resource = resource
             self.model = model
+            self.blacklist=blacklist
+            if self.blacklist is None:
+                self.blacklist = []
 
         def id_(self):
             return str(self.model.__getattribute__(self.resource._primary_columns[0]))
@@ -79,7 +82,10 @@ class SQLAlchemyResource(Resource):
             return self.resource.name()
 
         def attributes(self):
-            return alchemyjsonschema.dictify.jsonify(self.model, self.resource.schema)
+            attributes_ = alchemyjsonschema.dictify.jsonify(self.model, self.resource.schema)
+            for key in self.blacklist:
+                attributes_.pop(key, None)
+            return attributes_
 
     def __init__(self, model_cls, sessionmaker):
         self._primary_columns = model_cls.__table__.primary_key.columns.keys()
@@ -89,6 +95,7 @@ class SQLAlchemyResource(Resource):
         self.model_primary_key = getattr(self.model_cls, self._primary_columns[0])
         self.sessionmaker = sessionmaker
         self.session = sqlalchemy.orm.scoped_session(sessionmaker)
+        self.blacklist = []
         factory = alchemyjsonschema.SchemaFactory(alchemyjsonschema.StructuralWalker)
         schema = factory(self.model_cls, excludes=self._primary_columns)
         super().__init__(schema)
@@ -115,7 +122,7 @@ class SQLAlchemyResource(Resource):
         model = self.model_cls(**attributes)
         self.session.add(model)
         self.session.commit()
-        return SQLAlchemyResource.ResourceObject(self, model)
+        return SQLAlchemyResource.ResourceObject(self, model, blacklist=self.blacklist)
 
     def read(self, id_):
         model = (
@@ -123,7 +130,7 @@ class SQLAlchemyResource(Resource):
             .filter_by(**self._id_filter(id_))
             .one_or_none()
         )
-        return None if model is None else SQLAlchemyResource.ResourceObject(self, model)
+        return None if model is None else SQLAlchemyResource.ResourceObject(self, model, blacklist=self.blacklist)
 
     def update(self, id_, attributes):
         model = (
@@ -133,7 +140,7 @@ class SQLAlchemyResource(Resource):
             setattr(model, k, v)
         self.session.merge(model)
         self.session.commit()
-        return SQLAlchemyResource.ResourceObject(self, model)
+        return SQLAlchemyResource.ResourceObject(self, model, blacklist=self.blacklist)
 
     def delete(self, id_):
         # TODO shouldnt it be
@@ -157,7 +164,7 @@ class SQLAlchemyResource(Resource):
             models = self.session.query(self.model_cls)
         res = []
         for model in models:
-            res.append(SQLAlchemyResource.ResourceObject(self, model))
+            res.append(SQLAlchemyResource.ResourceObject(self, model, blacklist=self.blacklist))
         return (res, count)
 
 

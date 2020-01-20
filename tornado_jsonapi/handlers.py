@@ -153,10 +153,17 @@ class APIHandler(tornado.web.RequestHandler):
                 raise APIError(status.HTTP_404_NOT_FOUND, "")
         resource_attributes = resource.attributes()
         attributes = self._resource._schema()
+        blacklist_attr = []
         for attr_name in attributes.keys():
             if attr_name in resource_attributes:
                 attributes[attr_name] = resource_attributes[attr_name]
+            else:
+                blacklist_attr.append(attr_name)
+
+        for attr in blacklist_attr:
+            attributes.pop(attr, None)
         attributes.validate()
+
         return {
             "id": resource.id_(),
             "type": resource.type_(),

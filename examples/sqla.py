@@ -4,7 +4,7 @@
 import tornado.ioloop
 from tornado.options import options, define
 
-from sqlalchemy import create_engine, Column, Integer, String
+from sqlalchemy import create_engine, Column, Integer, String, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
@@ -21,6 +21,7 @@ class Post(Base):
     id = Column(Integer, primary_key=True)
     author = Column(String)
     text = Column(String)
+    hideMe = Column(DateTime)
 
 
 def main():
@@ -42,12 +43,14 @@ def main():
         s.add(p)
     s.commit()
 
+    postResource = tornado_jsonapi.resource.SQLAlchemyResource(Post, Session)
+    postResource.blacklist.append(Post.hideMe)
+
     application = tornado.web.Application([
         (
             r"/api/posts/([^/]*)",
             tornado_jsonapi.handlers.APIHandler,
-            dict(resource=tornado_jsonapi.resource.SQLAlchemyResource(
-                Post, Session))
+            dict(resource=postResource)
         ),
     ], **settings)
     application.listen(8888)
