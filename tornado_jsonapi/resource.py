@@ -71,7 +71,7 @@ class SQLAlchemyResource(Resource):
         def __init__(self, resource, model, blacklist=None):
             self.resource = resource
             self.model = model
-            self.blacklist=blacklist
+            self.blacklist = blacklist
             if self.blacklist is None:
                 self.blacklist = []
 
@@ -82,7 +82,9 @@ class SQLAlchemyResource(Resource):
             return self.resource.name()
 
         def attributes(self):
-            attributes_ = alchemyjsonschema.dictify.jsonify(self.model, self.resource.schema)
+            attributes_ = alchemyjsonschema.dictify.jsonify(
+                self.model, self.resource.schema
+            )
             for key in self.blacklist:
                 attributes_.pop(key, None)
             return attributes_
@@ -130,7 +132,13 @@ class SQLAlchemyResource(Resource):
             .filter_by(**self._id_filter(id_))
             .one_or_none()
         )
-        return None if model is None else SQLAlchemyResource.ResourceObject(self, model, blacklist=self.blacklist)
+        return (
+            None
+            if model is None
+            else SQLAlchemyResource.ResourceObject(
+                self, model, blacklist=self.blacklist
+            )
+        )
 
     def update(self, id_, attributes):
         model = (
@@ -154,7 +162,9 @@ class SQLAlchemyResource(Resource):
         return r
 
     def list_(self, limit=0, page=0):
-        count = self.session.query(sqlalchemy.func.count(self.model_primary_key)).scalar()
+        count = self.session.query(
+            sqlalchemy.func.count(self.model_primary_key)
+        ).scalar()
 
         if limit > 0:
             start = abs(page) * limit
@@ -164,7 +174,9 @@ class SQLAlchemyResource(Resource):
             models = self.session.query(self.model_cls)
         res = []
         for model in models:
-            res.append(SQLAlchemyResource.ResourceObject(self, model, blacklist=self.blacklist))
+            res.append(
+                SQLAlchemyResource.ResourceObject(self, model, blacklist=self.blacklist)
+            )
         return (res, count)
 
 
