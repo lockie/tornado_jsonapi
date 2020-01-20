@@ -33,6 +33,14 @@ def main():
     engine = create_engine('sqlite:///:memory:', echo=settings['debug'])
     Base.metadata.create_all(engine)
     Session = sessionmaker(bind=engine)
+    
+    s = Session()
+    for i in range(0,10):
+        p = Post()
+        p.author = "Author %d" % i
+        p.text = "Text for %d" % i
+        s.add(p)
+    s.commit()
 
     application = tornado.web.Application([
         (
