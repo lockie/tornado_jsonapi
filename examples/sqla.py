@@ -30,13 +30,14 @@ def main():
     settings = {}
     settings.update(options.group_dict(None))
     settings.update(tornado_jsonapi.handlers.not_found_handling_settings())
+    settings.update({'jsonapi_limit': 12})
 
     engine = create_engine('sqlite:///:memory:', echo=settings['debug'])
     Base.metadata.create_all(engine)
     Session = sessionmaker(bind=engine)
     
     s = Session()
-    for i in range(0,10):
+    for i in range(1,16):
         p = Post()
         p.author = "Author %d" % i
         p.text = "Text for %d" % i
