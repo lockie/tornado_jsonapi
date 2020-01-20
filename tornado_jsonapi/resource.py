@@ -57,6 +57,9 @@ class Resource:
     def list_(self, limit=0, page=0):
         raise NotImplementedError
 
+    def list_count_(self):
+        raise NotImplementedError
+
 
 try:
     import sqlalchemy
@@ -161,11 +164,12 @@ class SQLAlchemyResource(Resource):
         self.session.commit()
         return r
 
-    def list_(self, limit=0, page=0):
-        count = self.session.query(
+    def list_count_(self):
+        return self.session.query(
             sqlalchemy.func.count(self.model_primary_key)
         ).scalar()
 
+    def list_(self, limit=0, page=0):
         if limit > 0:
             start = abs(page) * limit
             stop = start + limit
@@ -177,7 +181,7 @@ class SQLAlchemyResource(Resource):
             res.append(
                 SQLAlchemyResource.ResourceObject(self, model, blacklist=self.blacklist)
             )
-        return (res, count)
+        return res
 
 
 try:
@@ -398,7 +402,11 @@ class DBAPI2Resource(Resource):
             if is_future(cur):
                 cur = yield cur
             rows = cur.fetchall()
-            return (
-                [DBAPI2Resource.ResourceObject(self, row) for row in rows],
-                len(rows),
-            )
+            return [DBAPI2Resource.ResourceObject(self, row) for row in rows]
+
+    @gen.coroutine
+    def list_count_(self):
+        count = self.list_()
+        while is_future(count):
+            count = yield count
+        return len(count)

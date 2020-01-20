@@ -89,8 +89,12 @@ class Posts(tornado_jsonapi.resource.Resource):
         return False
 
     @gen.coroutine
-    def list_(self):
+    def list_(self, limit=0, page=0):
         return [Posts.ResourceObject(self, p) for p in self.data]
+
+    @gen.coroutine
+    def list_count_(self):
+        return len(self.data)
 
 
 def main():

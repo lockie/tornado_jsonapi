@@ -246,13 +246,17 @@ class APIHandler(tornado.web.RequestHandler):
         )
 
         if not id_:
-            (res, total) = self._resource.list_(limit=limit, page=page)
+            res = self._resource.list_(limit=limit, page=page)
             while is_future(res):
                 res = yield res
+            count = self._resource.list_count_()
+            while is_future(count):
+                count = yield count
+
             self.render(
                 res,
                 additional={
-                    "list_limits": {"total": total, "limit": limit, "page": page,}
+                    "list_limits": {"total": count, "limit": limit, "page": page,}
                 },
             )
         else:
