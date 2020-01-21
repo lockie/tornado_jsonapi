@@ -11,7 +11,6 @@ from sqlalchemy.orm import sessionmaker
 import tornado_jsonapi.handlers
 import tornado_jsonapi.resource
 
-
 Base = declarative_base()
 
 
@@ -22,6 +21,7 @@ class Post(Base):
     author = Column(String)
     text = Column(String)
     hideMe = Column(DateTime)
+    hideMe2 = Column(String, default="secret")
 
 
 def main():
@@ -46,6 +46,7 @@ def main():
 
     postResource = tornado_jsonapi.resource.SQLAlchemyResource(Post, Session)
     postResource.blacklist.append(Post.hideMe)
+    postResource.blacklist.append("hideMe2")
 
     application = tornado.web.Application([
         (
