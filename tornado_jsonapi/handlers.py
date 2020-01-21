@@ -235,7 +235,6 @@ class APIHandler(tornado.web.RequestHandler):
         server_limit = (
             self.settings["jsonapi_limit"] if "jsonapi_limit" in self.settings else 0
         )
-        print("server limit", server_limit)
         if server_limit > 0 and (limit > server_limit or limit == 0):
             limit = server_limit
 
@@ -256,7 +255,7 @@ class APIHandler(tornado.web.RequestHandler):
             self.render(
                 res,
                 additional={
-                    "list_limits": {"total": count, "limit": limit, "page": page,}
+                    "limits": {"total": count, "limit": limit, "page": page,}
                 },
             )
         else:
