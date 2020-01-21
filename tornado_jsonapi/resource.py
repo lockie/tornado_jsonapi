@@ -406,7 +406,11 @@ class DBAPI2Resource(Resource):
 
     @gen.coroutine
     def list_count(self):
-        count = self.list_()
-        while is_future(count):
-            count = yield count
-        return len(count)
+        with (yield self.cursor(self.connection)) as cursor:
+            cur = dbapiext.execute_f(
+                cursor, "select count(1) from %s", self._tablename
+            )
+            if is_future(cur):
+                cur = yield cur
+            rows = cur.fetchone()
+            return rows[0]
