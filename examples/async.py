@@ -90,6 +90,9 @@ class Posts(tornado_jsonapi.resource.Resource):
 
     @gen.coroutine
     def list_(self, limit=0, page=0):
+        """
+        Note that limit and page are not implemented in this example
+        """
         return [Posts.ResourceObject(self, p) for p in self.data]
 
     @gen.coroutine

@@ -396,9 +396,16 @@ class DBAPI2Resource(Resource):
     @gen.coroutine
     def list_(self, limit=0, page=0):
         with (yield self.cursor(self.connection)) as cursor:
-            cur = dbapiext.execute_f(
-                cursor, "select %s from %s", self.columns + ["id"], self._tablename
-            )
+            if limit > 0:
+                start = abs(page)*limit
+                end = limit
+                cur = dbapiext.execute_f(
+                    cursor, "select %s from %s limit %d,%d", self.columns + ["id"], self._tablename, start, end
+                )
+            else:
+                cur = dbapiext.execute_f(
+                    cursor, "select %s from %s", self.columns + ["id"], self._tablename
+                )
             if is_future(cur):
                 cur = yield cur
             rows = cur.fetchall()

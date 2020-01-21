@@ -41,9 +41,17 @@ def main():
     settings.update(options.group_dict(None))
     settings.update(tornado_jsonapi.handlers.not_found_handling_settings())
 
+    conn = sqlite3.connect(':memory:')
+    
+
     r = tornado_jsonapi.resource.DBAPI2Resource(
-        schema, sqlite3, sqlite3.connect(':memory:'))
+        schema, sqlite3, conn)
     r._create_table()
+
+    cur = conn.cursor()
+    for i in range(1,16):
+        cur.execute("INSERT INTO posts(text,author) VALUES(?,?)", ("Text" + str(i), str(i)))
+
     application = tornado.web.Application([
         (
             r"/api/posts/([^/]*)",
