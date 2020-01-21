@@ -57,7 +57,7 @@ class Resource:
     def list_(self, limit=0, page=0):
         raise NotImplementedError
 
-    def list_count_(self):
+    def list_count(self):
         raise NotImplementedError
 
 
@@ -164,7 +164,7 @@ class SQLAlchemyResource(Resource):
         self.session.commit()
         return r
 
-    def list_count_(self):
+    def list_count(self):
         return self.session.query(
             sqlalchemy.func.count(self.model_primary_key)
         ).scalar()
@@ -405,7 +405,7 @@ class DBAPI2Resource(Resource):
             return [DBAPI2Resource.ResourceObject(self, row) for row in rows]
 
     @gen.coroutine
-    def list_count_(self):
+    def list_count(self):
         count = self.list_()
         while is_future(count):
             count = yield count

@@ -249,7 +249,7 @@ class APIHandler(tornado.web.RequestHandler):
             res = self._resource.list_(limit=limit, page=page)
             while is_future(res):
                 res = yield res
-            count = self._resource.list_count_()
+            count = self._resource.list_count()
             while is_future(count):
                 count = yield count
 
