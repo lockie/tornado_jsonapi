@@ -15,7 +15,7 @@ from tornado import gen
 import tornado.testing
 from tornado import netutil
 from tornado.testing import AsyncHTTPTestCase
-from tornado.wsgi import WSGIAdapter
+from tornado.wsgi import WSGIContainer
 from http.cookiejar import CookieJar
 
 import tornado_jsonapi.handlers
@@ -94,7 +94,7 @@ class BaseTestCase(AsyncHTTPTestCase):
     def setUp(self):
         AsyncHTTPTestCase.setUp(self)
         self.app = webtest.TestApp(
-            WSGIAdapter(self.get_app()),
+            WSGIContainer(self.get_app()),
             cookiejar=CookieJar())
 
 

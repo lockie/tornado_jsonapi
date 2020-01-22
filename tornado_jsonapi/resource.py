@@ -79,7 +79,9 @@ class SQLAlchemyResource(Resource):
                 self.blacklist = []
 
         def id_(self):
-            return str(self.model.__getattribute__(self.resource._primary_columns[0]))
+            return str(
+                self.model.__getattribute__(self.resource._primary_columns[0])
+            )
 
         def type_(self):
             return self.resource.name()
@@ -97,11 +99,15 @@ class SQLAlchemyResource(Resource):
         if len(self._primary_columns) > 1:
             raise NotImplementedError("Compound primary keys not supported")
         self.model_cls = model_cls
-        self.model_primary_key = getattr(self.model_cls, self._primary_columns[0])
+        self.model_primary_key = getattr(
+            self.model_cls, self._primary_columns[0]
+        )
         self.sessionmaker = sessionmaker
         self.session = sqlalchemy.orm.scoped_session(sessionmaker)
         self.blacklist = []
-        factory = alchemyjsonschema.SchemaFactory(alchemyjsonschema.StructuralWalker)
+        factory = alchemyjsonschema.SchemaFactory(
+            alchemyjsonschema.StructuralWalker
+        )
         schema = factory(self.model_cls, excludes=self._primary_columns)
         super().__init__(schema)
 
@@ -127,7 +133,9 @@ class SQLAlchemyResource(Resource):
         model = self.model_cls(**attributes)
         self.session.add(model)
         self.session.commit()
-        return SQLAlchemyResource.ResourceObject(self, model, blacklist=self.blacklist)
+        return SQLAlchemyResource.ResourceObject(
+            self, model, blacklist=self.blacklist
+        )
 
     def read(self, id_):
         model = (
@@ -145,13 +153,17 @@ class SQLAlchemyResource(Resource):
 
     def update(self, id_, attributes):
         model = (
-            self.session.query(self.model_cls).filter_by(**self._id_filter(id_)).one()
+            self.session.query(self.model_cls)
+            .filter_by(**self._id_filter(id_))
+            .one()
         )
         for k, v in attributes.items():
             setattr(model, k, v)
         self.session.merge(model)
         self.session.commit()
-        return SQLAlchemyResource.ResourceObject(self, model, blacklist=self.blacklist)
+        return SQLAlchemyResource.ResourceObject(
+            self, model, blacklist=self.blacklist
+        )
 
     def delete(self, id_):
         # TODO shouldnt it be
@@ -179,7 +191,9 @@ class SQLAlchemyResource(Resource):
         res = []
         for model in models:
             res.append(
-                SQLAlchemyResource.ResourceObject(self, model, blacklist=self.blacklist)
+                SQLAlchemyResource.ResourceObject(
+                    self, model, blacklist=self.blacklist
+                )
             )
         return res
 
@@ -256,7 +270,9 @@ class DBAPI2Resource(Resource):
             return self._resource.name()
 
         def attributes(self):
-            return {n: v for (n, v) in zip(self._resource.columns, self.row[:-1])}
+            return {
+                n: v for (n, v) in zip(self._resource.columns, self.row[:-1])
+            }
 
     def __init__(self, schema, dbapi, connection):
         self.cursor = dbapi2Cursor
@@ -397,14 +413,21 @@ class DBAPI2Resource(Resource):
     def list_(self, limit=0, page=0):
         with (yield self.cursor(self.connection)) as cursor:
             if limit > 0:
-                start = abs(page)*limit
-                end = limit
+                start = abs(page) * limit
                 cur = dbapiext.execute_f(
-                    cursor, "select %s from %s limit %d,%d", self.columns + ["id"], self._tablename, start, end
+                    cursor,
+                    "select %s from %s limit %d offset %d",
+                    self.columns + ["id"],
+                    self._tablename,
+                    limit,
+                    start,
                 )
             else:
                 cur = dbapiext.execute_f(
-                    cursor, "select %s from %s", self.columns + ["id"], self._tablename
+                    cursor,
+                    "select %s from %s",
+                    self.columns + ["id"],
+                    self._tablename,
                 )
             if is_future(cur):
                 cur = yield cur

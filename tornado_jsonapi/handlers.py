@@ -41,7 +41,9 @@ class APIHandler(tornado.web.RequestHandler):
         self.set_header("Content-Type", self._get_content_type())
         self.set_header(
             "Server",
-            "TornadoServer/{} tornado_jsonapi/{}".format(tornado.version, __version__),
+            "TornadoServer/{} tornado_jsonapi/{}".format(
+                tornado.version, __version__
+            ),
         )
 
     def write_error(self, status_code, **kwargs):
@@ -51,7 +53,9 @@ class APIHandler(tornado.web.RequestHandler):
         if isinstance(exception, tornado.web.HTTPError):
             reason = exception.reason
         if not reason:
-            reason = tornado.httputil.responses.get(status_code, "Unknown error")
+            reason = tornado.httputil.responses.get(
+                status_code, "Unknown error"
+            )
         detail = ""
         if isinstance(exception, tornado.web.HTTPError):
             detail = (
@@ -98,7 +102,9 @@ class APIHandler(tornado.web.RequestHandler):
         elif isinstance(value, tornado.web.HTTPError):
             if value.log_message:
                 format = "%d %s: " + value.log_message
-                args = [value.status_code, self._request_summary()] + list(value.args)
+                args = [value.status_code, self._request_summary()] + list(
+                    value.args
+                )
                 gen_log.warning(format, *args)
         else:
             value.error_id = APIError._generate_id()
@@ -209,7 +215,9 @@ class APIHandler(tornado.web.RequestHandler):
                 self._resource.name(),
             )
         if data["attributes"] is None:
-            raise APIError(status.HTTP_400_BAD_REQUEST, "Missing object attributes")
+            raise APIError(
+                status.HTTP_400_BAD_REQUEST, "Missing object attributes"
+            )
         attributes = data["attributes"].as_dict()
         if validate:
             try:
@@ -233,7 +241,9 @@ class APIHandler(tornado.web.RequestHandler):
             else 0
         )
         server_limit = (
-            self.settings["jsonapi_limit"] if "jsonapi_limit" in self.settings else 0
+            self.settings["jsonapi_limit"]
+            if "jsonapi_limit" in self.settings
+            else 0
         )
         if server_limit > 0 and (limit > server_limit or limit == 0):
             limit = server_limit
@@ -255,7 +265,7 @@ class APIHandler(tornado.web.RequestHandler):
             self.render(
                 res,
                 additional={
-                    "limits": {"total": count, "limit": limit, "page": page,}
+                    "limits": {"total": count, "limit": limit, "page": page}
                 },
             )
         else:

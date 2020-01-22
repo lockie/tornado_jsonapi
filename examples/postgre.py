@@ -12,7 +12,8 @@ import tornado_jsonapi.handlers
 import tornado_jsonapi.resource
 
 
-schema = json.loads("""
+schema = json.loads(
+    """
     {
         "$schema": "http://json-schema.org/draft-04/schema#",
         "title": "post",
@@ -33,7 +34,8 @@ schema = json.loads("""
         "required": [ "text", "author" ],
         "additionalProperties": false
     }
-""")
+"""
+)
 
 
 def main():
@@ -48,11 +50,8 @@ def main():
     # connect to postgre using momoko
     #  see http://momoko.61924.nl/en/latest/tutorial.html#trival-example
     conn = momoko.Pool(
-        'dbname=postgres '
-        'user=postgres '
-        'host=localhost '
-        'port=5432',
-        ioloop=io_loop
+        "dbname=postgres " "user=postgres " "host=localhost " "port=5432",
+        ioloop=io_loop,
     )
     future = conn.connect()
     io_loop.add_future(future, lambda x: io_loop.stop())
@@ -62,13 +61,16 @@ def main():
     r = tornado_jsonapi.resource.DBAPI2Resource(schema, momoko, connection)
     io_loop.add_future(r._create_table(), lambda x: io_loop.stop())
     io_loop.start()
-    application = tornado.web.Application([
-        (
-            r"/api/posts/([^/]*)",
-            tornado_jsonapi.handlers.APIHandler,
-            dict(resource=r)
-        ),
-    ], **settings)
+    application = tornado.web.Application(
+        [
+            (
+                r"/api/posts/([^/]*)",
+                tornado_jsonapi.handlers.APIHandler,
+                dict(resource=r),
+            ),
+        ],
+        **settings
+    )
     application.listen(8888)
     io_loop.start()
 

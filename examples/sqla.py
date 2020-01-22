@@ -15,7 +15,7 @@ Base = declarative_base()
 
 
 class Post(Base):
-    __tablename__ = 'posts'
+    __tablename__ = "posts"
 
     id = Column(Integer, primary_key=True)
     author = Column(String)
@@ -30,14 +30,14 @@ def main():
     settings = {}
     settings.update(options.group_dict(None))
     settings.update(tornado_jsonapi.handlers.not_found_handling_settings())
-    settings.update({'jsonapi_limit': 12})
+    settings.update({"jsonapi_limit": 12})
 
-    engine = create_engine('sqlite:///:memory:', echo=settings['debug'])
+    engine = create_engine("sqlite:///:memory:", echo=settings["debug"])
     Base.metadata.create_all(engine)
     Session = sessionmaker(bind=engine)
-    
+
     s = Session()
-    for i in range(1,16):
+    for i in range(1, 16):
         p = Post()
         p.author = "Author %d" % i
         p.text = "Text for %d" % i
@@ -48,13 +48,16 @@ def main():
     postResource.blacklist.append(Post.hideMe)
     postResource.blacklist.append("hideMe2")
 
-    application = tornado.web.Application([
-        (
-            r"/api/posts/([^/]*)",
-            tornado_jsonapi.handlers.APIHandler,
-            dict(resource=postResource)
-        ),
-    ], **settings)
+    application = tornado.web.Application(
+        [
+            (
+                r"/api/posts/([^/]*)",
+                tornado_jsonapi.handlers.APIHandler,
+                dict(resource=postResource),
+            ),
+        ],
+        **settings
+    )
     application.listen(8888)
     tornado.ioloop.IOLoop.current().start()
 

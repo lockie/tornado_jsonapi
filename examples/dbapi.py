@@ -10,7 +10,8 @@ import tornado_jsonapi.handlers
 import tornado_jsonapi.resource
 
 
-schema = json.loads("""
+schema = json.loads(
+    """
     {
         "$schema": "http://json-schema.org/draft-04/schema#",
         "title": "post",
@@ -31,7 +32,8 @@ schema = json.loads("""
         "required": [ "text", "author" ],
         "additionalProperties": false
     }
-""")
+"""
+)
 
 
 def main():
@@ -41,24 +43,31 @@ def main():
     settings.update(options.group_dict(None))
     settings.update(tornado_jsonapi.handlers.not_found_handling_settings())
 
-    conn = sqlite3.connect(':memory:')
-    
+    conn = sqlite3.connect(":memory:")
 
-    r = tornado_jsonapi.resource.DBAPI2Resource(
-        schema, sqlite3, conn)
+    r = tornado_jsonapi.resource.DBAPI2Resource(schema, sqlite3, conn)
     r._create_table()
 
     cur = conn.cursor()
-    for i in range(1,16):
-        cur.execute("INSERT INTO posts(text,author) VALUES(?,?)", ("Text" + str(i), str(i)))
+    for i in range(1, 16):
+        cur.execute(
+            "INSERT INTO posts(text,author) VALUES(?,?)",
+            (
+                "Text" + str(i),
+                str(i)
+            )
+        )
 
-    application = tornado.web.Application([
-        (
-            r"/api/posts/([^/]*)",
-            tornado_jsonapi.handlers.APIHandler,
-            dict(resource=r)
-        ),
-    ], **settings)
+    application = tornado.web.Application(
+        [
+            (
+                r"/api/posts/([^/]*)",
+                tornado_jsonapi.handlers.APIHandler,
+                dict(resource=r),
+            ),
+        ],
+        **settings
+    )
     application.listen(8888)
     tornado.ioloop.IOLoop.current().start()
 

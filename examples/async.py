@@ -21,18 +21,19 @@ class Posts(tornado_jsonapi.resource.Resource):
             hsh = hashlib.sha1()
             values = [self.data[attr] for attr in sorted(self.data)]
             for v in values:
-                hsh.update(bytes(str(v), 'utf-8'))
+                hsh.update(bytes(str(v), "utf-8"))
             return hsh.hexdigest()
 
         def type_(self):
-            return 'post'
+            return "post"
 
         def attributes(self):
             return self.data
 
     def __init__(self, data):
         self.data = data
-        schema = json.loads("""
+        schema = json.loads(
+            """
             {
                 "$schema": "http://json-schema.org/draft-04/schema#",
                 "title": "post",
@@ -53,11 +54,12 @@ class Posts(tornado_jsonapi.resource.Resource):
                 "required": [ "text", "author" ],
                 "additionalProperties": false
             }
-            """)
+            """
+        )
         super().__init__(schema)
 
     def name(self):
-        return 'post'
+        return "post"
 
     @gen.coroutine
     def create(self, attributes):
@@ -106,13 +108,16 @@ def main():
     settings = {}
     settings.update(options.group_dict(None))
     settings.update(tornado_jsonapi.handlers.not_found_handling_settings())
-    application = tornado.web.Application([
-        (
-            r"/api/posts/([^/]*)",
-            tornado_jsonapi.handlers.APIHandler,
-            dict(resource=Posts(json.loads(open('data.json').read())))
-        ),
-    ], **settings)
+    application = tornado.web.Application(
+        [
+            (
+                r"/api/posts/([^/]*)",
+                tornado_jsonapi.handlers.APIHandler,
+                dict(resource=Posts(json.loads(open("data.json").read()))),
+            ),
+        ],
+        **settings
+    )
     application.listen(8888)
     tornado.ioloop.IOLoop.current().start()
 
