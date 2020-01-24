@@ -8,7 +8,7 @@ import inflection
 
 class Meta(jsl.Document):
     class Options(object):
-        definition_id = 'meta'
+        definition_id = "meta"
         additional_properties = True
 
 
@@ -17,7 +17,7 @@ class Link(jsl.Document):
     meta = jsl.DocumentField(Meta, as_ref=True)
 
     class Options(object):
-        definition_id = 'link'
+        definition_id = "link"
 
 
 class Links(jsl.Document):
@@ -25,7 +25,7 @@ class Links(jsl.Document):
     related = jsl.DocumentField(Link, as_ref=True)
 
     class Options(object):
-        definition_id = 'links'
+        definition_id = "links"
         additional_properties = True
 
 
@@ -37,15 +37,15 @@ class PostResource(jsl.Document):
     meta = jsl.DocumentField(Meta, as_ref=True)
 
     class Options(object):
-        definition_id = 'resource'
+        definition_id = "resource"
 
 
 class PostData(jsl.Document):
     data = jsl.DocumentField(PostResource, as_ref=True)
 
     class Options(object):
-        title = 'Data'
-        definition_id = 'data'
+        title = "Data"
+        definition_id = "data"
 
 
 class PatchResource(jsl.Document):
@@ -56,15 +56,15 @@ class PatchResource(jsl.Document):
     meta = jsl.DocumentField(Meta, as_ref=True)
 
     class Options(object):
-        definition_id = 'resource'
+        definition_id = "resource"
 
 
 class PatchData(jsl.Document):
     data = jsl.DocumentField(PatchResource, as_ref=True)
 
     class Options(object):
-        title = 'Data'
-        definition_id = 'data'
+        title = "Data"
+        definition_id = "data"
 
 
 def _build_schema(cls):
