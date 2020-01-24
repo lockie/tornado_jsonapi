@@ -15,7 +15,7 @@ from tornado import gen
 import tornado.testing
 from tornado import netutil
 from tornado.testing import AsyncHTTPTestCase
-from tornado.wsgi import WSGIContainer
+from tornado.wsgi import WSGIAdapter
 from http.cookiejar import CookieJar
 
 import tornado_jsonapi.handlers
@@ -94,7 +94,7 @@ class BaseTestCase(AsyncHTTPTestCase):
     def setUp(self):
         AsyncHTTPTestCase.setUp(self)
         self.app = webtest.TestApp(
-            WSGIContainer(self.get_app()),
+            WSGIAdapter(self.get_app()),
             cookiejar=CookieJar())
 
 
@@ -149,8 +149,11 @@ class Posts(tornado_jsonapi.resource.Resource):
                 return True
         return False
 
-    def list_(self):
+    def list_(self, limit=0, page=0):
         return [Posts.ResourceObject(self, p) for p in self.data]
+
+    def list_count(self):
+        return len(self.data)
 
 
 class SimpleAppMixin:

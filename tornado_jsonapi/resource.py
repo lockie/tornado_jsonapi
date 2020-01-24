@@ -304,8 +304,8 @@ class DBAPI2Resource(Resource):
     @gen.coroutine
     def _create_table(self):
         types = [
-            self._types_mapping[self._schema.propinfo(c)["type"]]
-            + (" not null" if c in self._schema.__required__ else "")
+            self._types_mapping[self._schema.propinfo(c)["type"]] +
+            (" not null" if c in self._schema.__required__ else "")
             for c in self.columns
         ]
         column_defs = [self._create_primary_key()] + [

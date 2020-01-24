@@ -138,9 +138,9 @@ class APIHandler(tornado.web.RequestHandler):
             return  # allow missing Accept header
         for a in accept.parse(accept_header):
             if (
-                a.all_types
-                or a.media_type.split("/")[0] == "application"
-                and a.all_subtypes
+                a.all_types or
+                a.media_type.split("/")[0] == "application" and
+                a.all_subtypes
             ):
                 return
             if a.media_type == self._get_content_type():
