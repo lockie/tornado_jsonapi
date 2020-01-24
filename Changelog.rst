@@ -1,6 +1,11 @@
 Changelog
 ---------
 
+0.1.4 (2020-01-24)
+------------------
+
+* Added support for column blacklisting and pagination, thanks to Zachary Gorak.
+
 
 0.1.3 (2016-04-07)
 ------------------
