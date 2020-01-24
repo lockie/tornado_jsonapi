@@ -42,13 +42,13 @@ setup(
         'jsl==0.2.2',
         'python_jsonschema_objects==0.0.19.post2',
         'python-status==1.0.1',
-        'tornado>=4.2',
+        'tornado>=4.2,<6.0',
     ],
     extras_require={
         'sqlalchemy': ['SQLAlchemy==1.0.12', 'alchemyjsonschema>=0.6.1'],
         'dbapi2': ['antiorm==1.2.0']
     },
-    tests_require=['pytest==2.9.1', 'pytest-pep8==1.0.6',
+    tests_require=['pytest==3.6.4', 'pytest-pep8==1.0.6',
         'WebTest==2.0.20', 'loremipsum==1.0.5'],
     cmdclass={'test': PyTest},
     description='Framework providing REST JSON API to Tornado web server',
